@@ -5,6 +5,7 @@
 package main
 
 import (
+	"log"
 	"fmt"
 	"github.com/gillesdemey/go-dicom"
 	"io/ioutil"
@@ -12,15 +13,21 @@ import (
 
 func main() {
 
-	bytes, err := ioutil.ReadFile("myfile.dcm")
-	
-	parser, err := dicom.NewParser()
-	data, err := parser.Parse(bytes)
+	bytes, err := ioutil.ReadFile("./myfile.dcm")
+	if err != nil  {
+		log.Fatal("file not found!")
+	}
 
+	parser, err := dicom.NewParser()
+	if err != nil  {
+		log.Fatal("dicom parse init failed")
+	}
+	
+	data, msg := parser.Parse(bytes)
+	<- msg
 	for _, elem := range data.Elements {
 		fmt.Printf("%+v\n", &elem)
 	}
-
 }
 ```
 
